@@ -1,0 +1,8 @@
+Header:
+  Accept: "*/*"
+  Accept-Encoding: "gzip, deflate, sdch"
+  Accept-Language: "ja,en-US;q=0.8,en;q=0.6"
+  Cache-Control: "max-age=0"
+  User-Agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.39 Safari/537.36"
+Host: "google.com"
+Foo: "bar"
