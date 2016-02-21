@@ -4,8 +4,14 @@ import (
   "time"
   "strconv"
   "sync"
-  "strings"
+  "fmt"
+  "math"
 )
+
+type Result struct {
+  Duration float64
+  Count int
+}
 
 func ShowScore() {
 	ShowLog("StressTest Finish!")
@@ -13,14 +19,14 @@ func ShowScore() {
 	ShowLog("Waiting for Stopping All Workers ...")
 }
 
-func CalcScore(score int, response int) int {
-	if response == 200 {
-		return score + 1
-	} else if strings.Contains(strconv.Itoa(response), "4") {
-		return score - 20
-	} else {
-		return score - 50
-	}
+func Record(title string, status int, t time.Duration) int {
+  dur := math.Ceil(t.Seconds() * 100000) / 100.0
+  b := map[int]Result{status: {Duration: dur, Count : 1}}
+  result[title] = b
+  //result[title][status].duration += t
+  fmt.Println(result)
+  fmt.Println(dur)
+  return 1
 }
 
 func UpdateScore(score int, wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {

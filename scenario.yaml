@@ -1,4 +1,4 @@
-Index:
+TopPage:
   method: "GET"
   url: "http://54.238.241.177/"
 Login:
@@ -7,6 +7,9 @@ Login:
   parameter:
     email: "ishocon@isho.con"
     password: "ishoconpass"
-Buy:
+BuyProduct:
   method: "POST"
   url: "http://54.238.241.177/products/buy/9999"
+MyPage:
+  method: "GET"
+  url: "http://54.238.241.177/users/1"

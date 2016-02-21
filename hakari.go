@@ -37,6 +37,7 @@ func ShowLog(str string) {
 var httpHeader = make(map[interface{}]interface{})
 var TotalScore = 0
 var Finished = false
+var result = make(map[string]map[int]Result)
 
 func main() {
 	flag.Usage = func() {
