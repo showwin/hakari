@@ -2,10 +2,9 @@ package main
 
 import (
   "time"
-  "strconv"
   "sync"
   "fmt"
-  "math"
+  "strconv"
 )
 
 type Result struct {
@@ -13,31 +12,39 @@ type Result struct {
   Count int
 }
 
-func ShowScore() {
-	ShowLog("StressTest Finish!")
-	ShowLog("Score: " + strconv.Itoa(TotalScore))
-	ShowLog("Waiting for Stopping All Workers ...")
+func ShowResult() {
+  ShowLog("StressTest Finish!")
+  fmt.Println("Result:")
+  for _, r := range scenario {
+    fmt.Println(r.Title)
+    m := result[r.Title]
+    for st, res := range m {
+      status := strconv.Itoa(st)
+      req := strconv.Itoa(res.Count)+" req"
+      tpr := strconv.FormatFloat(res.Duration * 1000 / float64(res.Count), 'f', 2, 64)+" ms/req"
+      fmt.Println("\t"+status+": "+req+", "+tpr+"\n")
+    }
+  }
 }
 
-func Record(title string, status int, t time.Duration) int {
-  dur := math.Ceil(t.Seconds() * 100000) / 100.0
-  b := map[int]Result{status: {Duration: dur, Count : 1}}
-  result[title] = b
-  //result[title][status].duration += t
-  fmt.Println(result)
-  fmt.Println(dur)
-  return 1
-}
+func Record(title string, status int, t time.Duration,  m *sync.Mutex) {
+  dur := t.Seconds()
 
-func UpdateScore(score int, wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
-	m.Lock()
+  m.Lock()
 	defer m.Unlock()
-	TotalScore = TotalScore + score
+  old_d := result[title][status].Duration
+  old_c := result[title][status].Count
+  b := map[int]Result{status: {Duration: old_d + dur, Count : old_c + 1}}
+  result[title] = b
+  //fmt.Println(result)
+  //fmt.Println(dur)
+}
+
+func CheckFinish(wg *sync.WaitGroup, finishTime time.Time) {
 	if time.Now().After(finishTime) {
 		wg.Done()
 		if Finished == false {
 			Finished = true
-			ShowScore()
 		}
 	}
 }

@@ -11,14 +11,14 @@ import (
 )
 
 func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
-	//for {
-    loadScenario()
-		Scenario(wg, m, finishTime)
-	//}
+	for {
+		StartScenario(wg, m, finishTime)
+	}
 }
 
 func StartStressTest(workload int) {
 	httpHeader = LoadHttpHeader()
+  loadScenario()
 	ShowLog("Stress Test Start!  Workload: " + strconv.Itoa(workload))
 	finishTime := time.Now().Add(1 * time.Minute)
 	wg := new(sync.WaitGroup)
@@ -28,6 +28,7 @@ func StartStressTest(workload int) {
 		go LoopRequests(wg, m, finishTime)
 	}
 	wg.Wait()
+  ShowResult()
 }
 
 func ShowLog(str string) {

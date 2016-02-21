@@ -1,7 +1,7 @@
 package main
 
 import (
-  "fmt"
+  //"fmt"
   "sync"
   "time"
   "net/http"
@@ -12,7 +12,21 @@ import (
   "gopkg.in/yaml.v2"
 )
 
-var scenario = yaml.MapSlice{}
+type Parameter struct {
+  Key string
+  Value string
+}
+
+type Request struct {
+  Title string
+  Method string
+  Url string
+  Params []Parameter
+}
+
+type Scenario []Request
+
+var scenario = Scenario{}
 
 func loadScenario() {
   file, err := ioutil.ReadFile("scenario.yaml")
@@ -20,40 +34,52 @@ func loadScenario() {
 		log.Fatal(err)
 	}
 
-	err = yaml.Unmarshal(file, &scenario)
+  m := yaml.MapSlice{}
+	err = yaml.Unmarshal(file, &m)
 	if err != nil {
 		log.Fatal(err)
 	}
-}
 
-func Scenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
-	score := 0
-  status := 200
-	var c []*http.Cookie
-  v := url.Values{}
-  method := ""
-  path := ""
-
-  for _, r := range scenario {
-    title := r.Key.(string)
-    fmt.Printf("scenario start: %v\n", title)
+  for _, r := range m {
+    req := Request{}
+    req.Title = r.Key.(string)
     for _, o := range r.Value.(yaml.MapSlice) {
       switch o.Key {
       case "method":
-        method = o.Value.(string)
+        req.Method = o.Value.(string)
       case "url":
-        path = o.Value.(string)
+        req.Url = o.Value.(string)
       case "parameter":
         for _, p := range o.Value.(yaml.MapSlice) {
-          v.Add(p.Key.(string), p.Value.(string))
+          par := Parameter{}
+          par.Key = p.Key.(string)
+          par.Value = p.Value.(string)
+          req.Params = append(req.Params, par)
         }
       }
     }
-    sTime := time.Now()
-    status, c = HttpRequest(method, path, v, c)
-    fTime := time.Now()
-    score = Record(title, status, fTime.Sub(sTime))
-    fmt.Println("\n")
+    scenario = append(scenario, req)
   }
-	UpdateScore(score, wg, m, finishTime)
+  //fmt.Println(scenario)
+}
+
+func StartScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+  var status int
+  var c []*http.Cookie
+
+  for _, r := range scenario {
+    //fmt.Printf("scenario start: %v\n", r.Title)
+
+    v := url.Values{}
+    for _, p := range r.Params {
+      v.Add(p.Key, p.Value)
+    }
+
+    sTime := time.Now()
+    status, c = HttpRequest(r.Method, r.Url, v, c)
+    fTime := time.Now()
+    Record(r.Title, status, fTime.Sub(sTime), m)
+    //fmt.Println("\n")
+  }
+  CheckFinish(wg, finishTime)
 }
