@@ -28,11 +28,11 @@ type Scenario []Request
 var scenario = Scenario{}
 
 func LoadScenario(path string) {
-  defer func() {
-    if err := recover(); err != nil {
-      log.Fatal("Invalid Format in Scenario File")
-    }
-  }()
+	defer func() {
+		if err := recover(); err != nil {
+			log.Fatal("Invalid Format in Scenario File")
+		}
+	}()
 
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
