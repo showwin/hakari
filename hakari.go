@@ -37,7 +37,7 @@ func ShowLog(str string) {
 
 func main() {
 	flag.Usage = func() {
-		fmt.Println(`Usage: ./hakari [option]
+		fmt.Println(`Usage: hakari [option]
 Options:
   -w N	           Run with N workers.   default: 2
   -c FILE          Config file.          default: ./config.yml
