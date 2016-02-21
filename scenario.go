@@ -1,7 +1,6 @@
 package main
 
 import (
-  //"fmt"
   "sync"
   "time"
   "net/http"
@@ -28,8 +27,8 @@ type Scenario []Request
 
 var scenario = Scenario{}
 
-func loadScenario() {
-  file, err := ioutil.ReadFile("scenario.yaml")
+func LoadScenario(path string) {
+  file, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,26 +59,29 @@ func loadScenario() {
     }
     scenario = append(scenario, req)
   }
-  //fmt.Println(scenario)
 }
 
 func StartScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
-  var status int
   var c []*http.Cookie
 
   for _, r := range scenario {
-    //fmt.Printf("scenario start: %v\n", r.Title)
+    var status int
+    var t time.Duration
 
     v := url.Values{}
     for _, p := range r.Params {
       v.Add(p.Key, p.Value)
     }
 
-    sTime := time.Now()
-    status, c = HttpRequest(r.Method, r.Url, v, c)
-    fTime := time.Now()
-    Record(r.Title, status, fTime.Sub(sTime), m)
-    //fmt.Println("\n")
+    status, c, t = HttpRequest(r.Method, r.Url, v, c)
+
+    Record(r.Title, status, t, m)
   }
   CheckFinish(wg, finishTime)
+}
+
+func CheckFinish(wg *sync.WaitGroup, finishTime time.Time) {
+	if time.Now().After(finishTime) {
+		wg.Done()
+	}
 }

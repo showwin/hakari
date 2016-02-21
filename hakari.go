@@ -6,8 +6,6 @@ import (
 	"strconv"
 	"time"
   "sync"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
@@ -16,18 +14,20 @@ func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	}
 }
 
-func StartStressTest(workload int) {
-	httpHeader = LoadHttpHeader()
-  loadScenario()
-	ShowLog("Stress Test Start!  Workload: " + strconv.Itoa(workload))
+func StartStressTest(worker int, cPath string, sPath string) {
+	LoadHttpHeader(cPath)
+  LoadScenario(sPath)
+	ShowLog("Stress Test Start!  Number of Workers: " + strconv.Itoa(worker))
 	finishTime := time.Now().Add(1 * time.Minute)
+
 	wg := new(sync.WaitGroup)
 	m := new(sync.Mutex)
-	for i := 0; i < workload; i++ {
+	for i := 0; i < worker; i++ {
 		wg.Add(1)
 		go LoopRequests(wg, m, finishTime)
 	}
 	wg.Wait()
+
   ShowResult()
 }
 
@@ -35,23 +35,21 @@ func ShowLog(str string) {
 	fmt.Println(time.Now().Format("15:04:05") + "  " + str)
 }
 
-var httpHeader = make(map[interface{}]interface{})
-var TotalScore = 0
-var Finished = false
-var result = make(map[string]map[int]Result)
-
 func main() {
 	flag.Usage = func() {
 		fmt.Println(`Usage: ./hakari [option]
 Options:
-  --workload N	    Run with N workloads
-  --c FILE          Config File`)
+  -w N	           Run with N workers
+  -c FILE          Config file
+  -s FILE          Scenario file`)
 	}
 
 	var (
-		workload = flag.Int("workload", 1, "run benchmark with n workloads")
+		worker = flag.Int("w", 2, "Run with N workers")
+    cPath = flag.String("c", "config.yaml", "Config file")
+    sPath = flag.String("s", "scenario.yaml", "Scenario file")
 	)
 	flag.Parse()
 
-	StartStressTest(*workload)
+	StartStressTest(*worker, *cPath, *sPath)
 }

@@ -7,8 +7,10 @@ import (
   "gopkg.in/yaml.v2"
 )
 
-func LoadHttpHeader() (map[interface{}]interface{}) {
-	file, err := ioutil.ReadFile("config.yaml")
+var httpHeader = make(map[interface{}]interface{})
+
+func LoadHttpHeader(path string) {
+	file, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,5 +20,6 @@ func LoadHttpHeader() (map[interface{}]interface{}) {
 	if err != nil {
 		log.Fatal(err)
 	}
-  return m["Header"].(map[interface{}]interface{})
+  
+  httpHeader = m["Header"].(map[interface{}]interface{})
 }

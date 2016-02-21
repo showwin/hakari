@@ -12,6 +12,8 @@ type Result struct {
   Count int
 }
 
+var result = make(map[string]map[int]Result)
+
 func ShowResult() {
   ShowLog("StressTest Finish!")
   fmt.Println("Result:")
@@ -36,15 +38,4 @@ func Record(title string, status int, t time.Duration,  m *sync.Mutex) {
   old_c := result[title][status].Count
   b := map[int]Result{status: {Duration: old_d + dur, Count : old_c + 1}}
   result[title] = b
-  //fmt.Println(result)
-  //fmt.Println(dur)
-}
-
-func CheckFinish(wg *sync.WaitGroup, finishTime time.Time) {
-	if time.Now().After(finishTime) {
-		wg.Done()
-		if Finished == false {
-			Finished = true
-		}
-	}
 }
