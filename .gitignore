@@ -26,3 +26,4 @@ _testmain.go
 # Custom
 myscenario.yml
 testscenario.yml
+.goxc.local.json

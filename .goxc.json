@@ -1,0 +1,14 @@
+{
+	"Tasks": [
+		"default",
+		"publish-github"
+	],
+	"PackageVersion": "0.1.0",
+	"TaskSettings": {
+		"publish-github": {
+			"owner": "showwin",
+			"repository": "hakari"
+		}
+	},
+	"ConfigVersion": "0.9"
+}
