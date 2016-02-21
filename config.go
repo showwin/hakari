@@ -19,7 +19,4 @@ func LoadHttpHeader() (map[interface{}]interface{}) {
 		log.Fatal(err)
 	}
   return m["Header"].(map[interface{}]interface{})
-	//for key, value := range a["Header"].(map[interface {}]interface {}) {
-	//  fmt.Printf("m: %v::%v\n", key, value)
-	//}
 }

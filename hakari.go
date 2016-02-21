@@ -12,6 +12,7 @@ import (
 
 func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	//for {
+    loadScenario()
 		Scenario(wg, m, finishTime)
 	//}
 }
