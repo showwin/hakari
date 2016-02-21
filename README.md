@@ -67,9 +67,9 @@ Login
 	200: 125 req, 255.11 ms/req
 
 BuyProduct
-  200: 98 req, 247.68 ms/req
-	404: 1 req, 97.12 ms/req
-  500: 26 req, 143.82 ms/req
+  	200: 98 req, 247.68 ms/req
+  	404: 1 req, 97.12 ms/req
+  	500: 26 req, 143.82 ms/req
 
 MyPage
 	200: 124 req, 233.42 ms/req
