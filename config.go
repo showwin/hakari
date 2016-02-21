@@ -12,7 +12,8 @@ var httpHeader = make(map[interface{}]interface{})
 func LoadConfig(path string) {
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal(err)
+		ShowLog("WARNING: Cannot open "+path+". hakari will use default HTTP client")
+		return
 	}
 
 	m := make(map[interface{}]interface{})

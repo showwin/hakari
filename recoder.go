@@ -16,7 +16,6 @@ var result = make(map[string]map[int]Result)
 
 func ShowResult() {
 	ShowLog("StressTest Finish!")
-	fmt.Println("Result:")
 	for _, r := range scenario {
 		fmt.Println(r.Title)
 		m := result[r.Title]

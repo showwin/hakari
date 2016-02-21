@@ -32,7 +32,7 @@ func StartStressTest(worker int, cPath string, sPath string, duration int) {
 }
 
 func ShowLog(str string) {
-	fmt.Println(time.Now().Format("15:04:05") + "  " + str)
+	fmt.Println(time.Now().Format("2006/01/02 15:04:05") + "  " + str)
 }
 
 func main() {
