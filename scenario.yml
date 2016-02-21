@@ -1,0 +1,15 @@
+TopPage:
+  method: "GET"
+  url: "http://example.com/"
+Login:
+  method: "POST"
+  url: "http://example.com/login"
+  parameter:
+    email: "user@example.com"
+    password: "secret_password"
+BuyProduct:
+  method: "POST"
+  url: "http://example.com/products/buy/1234"
+MyPage:
+  method: "GET"
+  url: "http://example.com/users/5555"

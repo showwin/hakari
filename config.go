@@ -9,7 +9,7 @@ import (
 
 var httpHeader = make(map[interface{}]interface{})
 
-func LoadHttpHeader(path string) {
+func LoadConfig(path string) {
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
@@ -21,5 +21,14 @@ func LoadHttpHeader(path string) {
 		log.Fatal(err)
 	}
 
+	loadHttpHeader(m)
+}
+
+func loadHttpHeader(m map[interface{}]interface{}) {
+	defer func() {
+    if err := recover(); err != nil {
+      log.Fatal("Invalid Format in Config File")
+    }
+  }()
 	httpHeader = m["Header"].(map[interface{}]interface{})
 }
