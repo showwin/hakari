@@ -15,7 +15,7 @@ type Result struct {
 var result = make(map[string]map[int]Result)
 
 func ShowResult() {
-	ShowLog("StressTest Finish!")
+	ShowLog("hakari Finish!")
 	for _, r := range scenario {
 		fmt.Println(r.Title)
 		m := result[r.Title]

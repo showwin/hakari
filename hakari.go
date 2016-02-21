@@ -17,7 +17,7 @@ func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 func StartStressTest(worker int, cPath string, sPath string, duration int) {
 	LoadConfig(cPath)
 	LoadScenario(sPath)
-	ShowLog("Stress Test Start!  Number of Workers: " + strconv.Itoa(worker))
+	ShowLog("hakari Start!  Number of Workers: " + strconv.Itoa(worker))
 	finishTime := time.Now().Add(time.Duration(duration) * time.Minute)
 
 	wg := new(sync.WaitGroup)
