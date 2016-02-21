@@ -1,12 +1,12 @@
 package main
 
 import (
-  "net/http"
+	"log"
+	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-  "strings"
-  "time"
-  "log"
+	"strings"
+	"time"
 )
 
 func HttpRequest(method string, path string, params url.Values, cookies []*http.Cookie) (int, []*http.Cookie, time.Duration) {
@@ -19,12 +19,12 @@ func HttpRequest(method string, path string, params url.Values, cookies []*http.
 	jar.SetCookies(CookieURL, cookies)
 	client := http.Client{Jar: jar}
 
-  sTime := time.Now()
+	sTime := time.Now()
 	resp, err := client.Do(req)
-  fTime := time.Now()
-  t := fTime.Sub(sTime)
+	fTime := time.Now()
+	t := fTime.Sub(sTime)
 	if err != nil {
-    log.Fatal(err)
+		log.Fatal(err)
 		return 500, cookies, t
 	}
 	defer resp.Body.Close()

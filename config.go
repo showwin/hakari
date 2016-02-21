@@ -1,10 +1,10 @@
 package main
 
 import (
-  "io/ioutil"
-  "log"
+	"io/ioutil"
+	"log"
 
-  "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 var httpHeader = make(map[interface{}]interface{})
@@ -20,6 +20,6 @@ func LoadHttpHeader(path string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-  
-  httpHeader = m["Header"].(map[interface{}]interface{})
+
+	httpHeader = m["Header"].(map[interface{}]interface{})
 }

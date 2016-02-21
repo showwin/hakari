@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"strconv"
+	"sync"
 	"time"
-  "sync"
 )
 
 func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
@@ -16,7 +16,7 @@ func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 
 func StartStressTest(worker int, cPath string, sPath string, duration int) {
 	LoadHttpHeader(cPath)
-  LoadScenario(sPath)
+	LoadScenario(sPath)
 	ShowLog("Stress Test Start!  Number of Workers: " + strconv.Itoa(worker))
 	finishTime := time.Now().Add(time.Duration(duration) * time.Minute)
 
@@ -28,7 +28,7 @@ func StartStressTest(worker int, cPath string, sPath string, duration int) {
 	}
 	wg.Wait()
 
-  ShowResult()
+	ShowResult()
 }
 
 func ShowLog(str string) {
@@ -46,10 +46,10 @@ Options:
 	}
 
 	var (
-		worker = flag.Int("w", 2, "Run with N workers")
-    cPath = flag.String("c", "config.yaml", "Config file")
-    sPath = flag.String("s", "scenario.yaml", "Scenario file")
-    duration = flag.Int("m", 1, "Run for N minutes")
+		worker   = flag.Int("w", 2, "Run with N workers")
+		cPath    = flag.String("c", "config.yaml", "Config file")
+		sPath    = flag.String("s", "scenario.yaml", "Scenario file")
+		duration = flag.Int("m", 1, "Run for N minutes")
 	)
 	flag.Parse()
 
