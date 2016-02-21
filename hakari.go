@@ -3,16 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
-
-	"gopkg.in/yaml.v2"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -56,25 +52,8 @@ var httpHeader = make(map[interface{}]interface{})
 var host = "http://google.com"
 var TotalScore = 0
 
-func loadConfig() {
-	file, err := ioutil.ReadFile("config.yaml")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	m := make(map[interface{}]interface{})
-	err = yaml.Unmarshal(file, &m)
-	if err != nil {
-		log.Fatal(err)
-	}
-	httpHeader = m["Header"].(map[interface{}]interface{})
-	//for key, value := range a["Header"].(map[interface {}]interface {}) {
-	//  fmt.Printf("m: %v::%v\n", key, value)
-	//}
-}
-
 func StartStressTest(workload int) {
-	loadConfig()
+	httpHeader = LoadHttpHeader()
 	ShowLog("Stress Test Start!  Workload: " + strconv.Itoa(workload))
 	//finishTime := time.Now().Add(1 * time.Minute)
 	//wg := new(sync.WaitGroup)
