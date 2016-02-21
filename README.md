@@ -1,5 +1,5 @@
 # hakari
-A Stress Test Tool for Web Application.
+A Stress Test Tool for Web Application.  
 Easy to Install, Easy to Write Scenario.
 
 ## Installation
@@ -7,6 +7,7 @@ Easy to Install, Easy to Write Scenario.
 ## Usage
 
 ```
+$ hakari --help
 Usage: hakari [option]
 Options:
   -w N	           Run with N workers.   default: 2
@@ -15,10 +16,11 @@ Options:
   -m N             Run for N minutes.    default: 1
 ```
 
-### Write Scenario
+### 1. Write Scenario
 hakari use YAML file to write request scenario, as follows:
 
-```yaml:scenario.yml
+```yaml
+# scenario.yml
 TopPage:
   method: "GET"
   url: "http://example.com/"
@@ -36,12 +38,14 @@ MyPage:
   url: "http://example.com/users/5555"
 ```
 
-### Run hakari
+`method` and `url` are **required** for each request.
+
+### 2. Run hakari
 
 ```bash
 $ hakari
-2016/02/21 18:12:47  Stress Test Start!  Number of Workers: 2
-2016/02/21 18:13:48  StressTest Finish!
+2016/02/21 18:12:47  hakari Start!  Number of Workers: 2
+2016/02/21 18:13:48  hakari Finish!
 TopPage
 	200: 125 req, 238.66 ms/req
 
@@ -57,9 +61,10 @@ MyPage
 	200: 124 req, 233.42 ms/req
 ```
 
-### Customize HTTP Header (option)
-Require `Header` in top level. Write HTTP header fields freely.
-```yaml:config.yml
+### (option) Customize HTTP Header 
+Require `Header` at top level. Write HTTP header fields freely.
+```yaml
+# config.yml
 Header:
   Accept: "*/*"
   Accept-Encoding: "gzip, deflate, sdch"
