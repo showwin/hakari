@@ -3,6 +3,20 @@ A Stress Test Tool for Web Application.
 Easy to Install, Easy to Write Scenario.
 
 ## Installation
+### OS X (homebrew)
+```
+$ brew tap showwin/hakari
+$ brew install hakari
+
+### How to Update ###
+$ brew update
+$ brew upgrade hakari
+```
+
+### Others (Linux, Windows.)
+Please download compatible package from [Releases](https://github.com/showwin/hakari/releases).  
+If there are no compatible package you want, please let me know by  [issues](https://github.com/showwin/hakari/issues).
+
 
 ## Usage
 
@@ -61,7 +75,7 @@ MyPage
 	200: 124 req, 233.42 ms/req
 ```
 
-### (option) Customize HTTP Header 
+### (option) Customize HTTP Header
 Require `Header` at top level. Write HTTP header fields freely.
 ```yaml
 # config.yml
