@@ -11,7 +11,7 @@ import (
 
 func HttpRequest(method string, path string, params url.Values, cookies []*http.Cookie) (int, []*http.Cookie, time.Duration) {
 	req, _ := http.NewRequest(method, path, strings.NewReader(params.Encode()))
-	for key, value := range httpHeader {
+	for key, value := range config.HttpHeader {
 		req.Header.Add(key.(string), value.(string))
 	}
 	jar, _ := cookiejar.New(nil)
