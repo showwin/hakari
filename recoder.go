@@ -8,33 +8,47 @@ import (
 )
 
 type Result struct {
+	Status   int
 	Duration float64
-	Count    int
 }
 
-var result = make(map[string]map[int]Result)
+type DurCount struct {
+	Duration float64
+	Count int
+}
+
+var result = make(map[string][]Result)
 
 func ShowResult() {
-	ShowLog("hakari Finish!")
 	for _, r := range scenario {
-		fmt.Println(r.Title)
 		m := result[r.Title]
-		for st, res := range m {
+		rm := map[int]DurCount{}
+		for _, res := range m {
+			c := rm[res.Status].Count
+			d := rm[res.Status].Duration
+			dc := DurCount{Duration: d+res.Duration, Count: c+1}
+			rm[res.Status] = dc
+		}
+
+		fmt.Println(r.Title)
+		for st, dc := range rm {
 			status := strconv.Itoa(st)
-			req := strconv.Itoa(res.Count) + " req"
-			tpr := strconv.FormatFloat(res.Duration*1000/float64(res.Count), 'f', 2, 64) + " ms/req"
+			req := strconv.Itoa(dc.Count) + " req"
+			tpr := strconv.FormatFloat(dc.Duration*1000/float64(dc.Count), 'f', 2, 64) + " ms/req"
 			fmt.Println("\t" + status + ": " + req + ", " + tpr + "\n")
 		}
 	}
 }
 
+func CreateReport(){
+	fmt.Println("Report will be created.")
+}
+
 func Record(title string, status int, t time.Duration, m *sync.Mutex) {
-	dur := t.Seconds()
+	d := t.Seconds()
+	r := Result{Status: status, Duration: d}
 
 	m.Lock()
 	defer m.Unlock()
-	old_d := result[title][status].Duration
-	old_c := result[title][status].Count
-	b := map[int]Result{status: {Duration: old_d + dur, Count: old_c + 1}}
-	result[title] = b
+	result[title] = append(result[title], r)
 }

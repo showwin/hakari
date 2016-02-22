@@ -18,7 +18,7 @@ func StartStressTest(worker int, cPath string, sPath string, duration int) {
 	LoadConfig(cPath)
 	LoadScenario(sPath)
 	ShowLog("hakari Start!  Number of Workers: " + strconv.Itoa(worker))
-	finishTime := time.Now().Add(time.Duration(duration) * time.Minute)
+	finishTime := time.Now().Add(time.Duration(duration) * time.Second)
 
 	wg := new(sync.WaitGroup)
 	m := new(sync.Mutex)
@@ -27,8 +27,7 @@ func StartStressTest(worker int, cPath string, sPath string, duration int) {
 		go LoopRequests(wg, m, finishTime)
 	}
 	wg.Wait()
-
-	ShowResult()
+	ShowLog("hakari Finish!")
 }
 
 func ShowLog(str string) {
@@ -42,16 +41,23 @@ Options:
   -w N	           Run with N workers.   default: 2
   -c FILE          Config file.          default: ./config.yml
   -s FILE          Scenario file.        default: ./scenario.yml
-  -m N             Run for N minutes.    default: 1`)
+  -d N             Run for N seconds.    default: 60
+	--report				 Create detail report.`)
 	}
 
 	var (
 		worker   = flag.Int("w", 2, "Run with N workers")
 		cPath    = flag.String("c", "config.yml", "Config file")
 		sPath    = flag.String("s", "scenario.yml", "Scenario file")
-		duration = flag.Int("m", 1, "Run for N minutes")
+		duration = flag.Int("d", 60, "Run for N seconds")
+		report_flg = flag.Bool("report", false, "Create detail report")
 	)
 	flag.Parse()
 
 	StartStressTest(*worker, *cPath, *sPath, *duration)
+	if *report_flg == true {
+		CreateReport()
+	} else {
+		ShowResult()
+	}
 }
