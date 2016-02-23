@@ -13,7 +13,7 @@ import (
 func StartScenario (wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	var c []*http.Cookie
 
-	for _, r := range scene.Requests {
+	for _, r := range scenario.Requests {
 		var status int
 		var t time.Duration
 
@@ -38,7 +38,7 @@ func CheckFinish(wg *sync.WaitGroup, finishTime time.Time) {
 
 func HttpRequest(method string, path string, params url.Values, cookies []*http.Cookie) (int, []*http.Cookie, time.Duration) {
 	req, _ := http.NewRequest(method, path, strings.NewReader(params.Encode()))
-	for key, value := range conf.HttpHeader {
+	for key, value := range config.HttpHeader {
 		req.Header.Add(key.(string), value.(string))
 	}
 	jar, _ := cookiejar.New(nil)

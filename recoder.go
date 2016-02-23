@@ -20,7 +20,7 @@ type DurCount struct {
 var result = make(map[string][]Result)
 
 func ShowResult() {
-	for _, r := range scene.Requests {
+	for _, r := range scenario.Requests {
 		m := result[r.Title]
 		rm := map[int]DurCount{}
 		for _, res := range m {
@@ -41,6 +41,7 @@ func ShowResult() {
 }
 
 func CreateReport(){
+	// ToDo
 	fmt.Println("Report will be created.")
 }
 

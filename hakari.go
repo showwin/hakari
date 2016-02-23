@@ -8,15 +8,31 @@ import (
 	"time"
 	"log"
 
-	"./config"
-	"./scenario"
+	cfg "github.com/showwin/hakari/config"
+	scn "github.com/showwin/hakari/scenario"
 )
 
-func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
-	for {
-		StartScenario(wg, m, finishTime)
-	}
-}
+var (
+	worker   = flag.Int("w", 2, "")
+	cPath    = flag.String("c", "config.yml", "")
+	sPath    = flag.String("s", "scenario.yml", "")
+	duration = flag.Int("d", 60, "")
+	report_flg = flag.Bool("report", false, "")
+
+	config = cfg.Config{}
+	scenario = scn.Scenario{}
+)
+
+var usage = `Usage: hakari [options...]
+
+Options:
+	-w N	           Run with N workers.   default: 2
+	-c FILE          Config file.          default: ./config.yml
+	-s FILE          Scenario file.        default: ./scenario.yml
+	-d N             Run for N seconds.    default: 60
+
+	--report				 Create detail report.
+`
 
 func StartStressTest(worker int, duration int) {
 	log.Print("hakari Start!  Number of Workers: " + strconv.Itoa(worker))
@@ -24,41 +40,30 @@ func StartStressTest(worker int, duration int) {
 
 	wg := new(sync.WaitGroup)
 	m := new(sync.Mutex)
+	wg.Add(worker)
 	for i := 0; i < worker; i++ {
-		wg.Add(1)
-		go LoopRequests(wg, m, finishTime)
+		go func() {
+			for {
+				StartScenario(wg, m, finishTime)
+			}
+		}()
 	}
 	wg.Wait()
 	log.Print("hakari Finish!")
 }
 
-var conf = config.Config{}
-var scene = scenario.Scenario{}
-
 func main() {
 	flag.Usage = func() {
-		fmt.Println(`Usage: hakari [option]
-Options:
-  -w N	           Run with N workers.   default: 2
-  -c FILE          Config file.          default: ./config.yml
-  -s FILE          Scenario file.        default: ./scenario.yml
-  -d N             Run for N seconds.    default: 60
-	--report				 Create detail report.`)
+		fmt.Println(usage)
 	}
 
-	var (
-		worker   = flag.Int("w", 2, "Run with N workers")
-		cPath    = flag.String("c", "config.yml", "Config file")
-		sPath    = flag.String("s", "scenario.yml", "Scenario file")
-		duration = flag.Int("d", 60, "Run for N seconds")
-		report_flg = flag.Bool("report", false, "Create detail report")
-	)
 	flag.Parse()
 
-	conf.Read(*cPath)
-	scene.Read(*sPath)
+	config.Read(*cPath)
+	scenario.Read(*sPath)
 
 	StartStressTest(*worker, *duration)
+
 	if *report_flg == true {
 		CreateReport()
 	} else {
