@@ -14,8 +14,8 @@ $ brew upgrade hakari
 ```
 
 ### Others (Linux, Windows.)
-Please download compatible package from [Releases](https://github.com/showwin/hakari/releases).  
-If there are no compatible package you want, please let me know by  [issues](https://github.com/showwin/hakari/issues).
+Please download the compatible package from [Releases](https://github.com/showwin/hakari/releases).  
+If there is no compatible package you want, please let me know by  [issues](https://github.com/showwin/hakari/issues).
 
 
 ## Usage
@@ -31,7 +31,7 @@ Options:
 ```
 
 ### 1. Write Scenario
-hakari use YAML file to write request scenario, as follows:
+hakari uses YAML file to write request scenario, as follows:
 
 ```yaml
 # scenario.yml
