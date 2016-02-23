@@ -1,12 +1,8 @@
-package main
+package scenario
 
 import (
 	"io/ioutil"
 	"log"
-	"net/http"
-	"net/url"
-	"sync"
-	"time"
 
 	"gopkg.in/yaml.v2"
 )
@@ -23,11 +19,11 @@ type Request struct {
 	Params []Parameter
 }
 
-type Scenario []Request
+type Scenario struct {
+	Requests []Request
+}
 
-var scenario = Scenario{}
-
-func LoadScenario(path string) {
+func (s *Scenario) Read(path string) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Fatal("Invalid Format in Scenario File")
@@ -63,31 +59,6 @@ func LoadScenario(path string) {
 				}
 			}
 		}
-		scenario = append(scenario, req)
-	}
-}
-
-func StartScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
-	var c []*http.Cookie
-
-	for _, r := range scenario {
-		var status int
-		var t time.Duration
-
-		v := url.Values{}
-		for _, p := range r.Params {
-			v.Add(p.Key, p.Value)
-		}
-
-		status, c, t = HttpRequest(r.Method, r.Url, v, c)
-
-		Record(r.Title, status, t, m)
-	}
-	CheckFinish(wg, finishTime)
-}
-
-func CheckFinish(wg *sync.WaitGroup, finishTime time.Time) {
-	if time.Now().After(finishTime) {
-		wg.Done()
+		s.Requests = append(s.Requests, req)
 	}
 }

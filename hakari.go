@@ -6,8 +6,10 @@ import (
 	"strconv"
 	"sync"
 	"time"
+	"log"
 
-	"github.com/showwin/hakari/config"
+	"./config"
+	"./scenario"
 )
 
 func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
@@ -16,9 +18,8 @@ func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	}
 }
 
-func StartStressTest(worker int, sPath string, duration int) {
-	LoadScenario(sPath)
-	ShowLog("hakari Start!  Number of Workers: " + strconv.Itoa(worker))
+func StartStressTest(worker int, duration int) {
+	log.Print("hakari Start!  Number of Workers: " + strconv.Itoa(worker))
 	finishTime := time.Now().Add(time.Duration(duration) * time.Second)
 
 	wg := new(sync.WaitGroup)
@@ -28,14 +29,11 @@ func StartStressTest(worker int, sPath string, duration int) {
 		go LoopRequests(wg, m, finishTime)
 	}
 	wg.Wait()
-	ShowLog("hakari Finish!")
+	log.Print("hakari Finish!")
 }
 
-func ShowLog(str string) {
-	fmt.Println(time.Now().Format("2006/01/02 15:04:05") + "  " + str)
-}
-
-var config = Config{}
+var conf = config.Config{}
+var scene = scenario.Scenario{}
 
 func main() {
 	flag.Usage = func() {
@@ -57,10 +55,10 @@ Options:
 	)
 	flag.Parse()
 
-	config.Path = *cPath
-	config.Read()
+	conf.Read(*cPath)
+	scene.Read(*sPath)
 
-	StartStressTest(*worker, *sPath, *duration)
+	StartStressTest(*worker, *duration)
 	if *report_flg == true {
 		CreateReport()
 	} else {

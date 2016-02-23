@@ -9,13 +9,12 @@ import (
 
 type Config struct {
 	HttpHeader map[interface{}]interface{}
-	Path string
 }
 
-func (c *Config) Read() {
-	file, err := ioutil.ReadFile(c.Path)
+func (c *Config) Read(path string) {
+	file, err := ioutil.ReadFile(path)
 	if err != nil {
-		ShowLog("WARNING: Cannot open " + c.Path + ". hakari will use default HTTP client")
+		log.Print("WARNING: Cannot open " + path + ". hakari will use default HTTP client")
 		return
 	}
 

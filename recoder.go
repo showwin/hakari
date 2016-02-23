@@ -20,7 +20,7 @@ type DurCount struct {
 var result = make(map[string][]Result)
 
 func ShowResult() {
-	for _, r := range scenario {
+	for _, r := range scene.Requests {
 		m := result[r.Title]
 		rm := map[int]DurCount{}
 		for _, res := range m {
