@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"sync"
 	"time"
 )
 
@@ -14,7 +13,7 @@ type Result struct {
 
 type DurCount struct {
 	Duration float64
-	Count int
+	Count    int
 }
 
 var result = make(map[string][]Result)
@@ -26,7 +25,7 @@ func ShowResult() {
 		for _, res := range m {
 			c := rm[res.Status].Count
 			d := rm[res.Status].Duration
-			dc := DurCount{Duration: d+res.Duration, Count: c+1}
+			dc := DurCount{Duration: d + res.Duration, Count: c + 1}
 			rm[res.Status] = dc
 		}
 
@@ -40,16 +39,14 @@ func ShowResult() {
 	}
 }
 
-func CreateReport(){
+func CreateReport() {
 	// ToDo
 	fmt.Println("Report will be created.")
 }
 
-func Record(title string, status int, t time.Duration, m *sync.Mutex) {
+func Record(title string, status int, t time.Duration) {
 	d := t.Seconds()
 	r := Result{Status: status, Duration: d}
 
-	m.Lock()
-	defer m.Unlock()
 	result[title] = append(result[title], r)
 }

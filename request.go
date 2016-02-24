@@ -7,36 +7,31 @@ import (
 	"net/url"
 	"strings"
 	"time"
-	"sync"
 )
 
-func StartScenario (wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
-	var c []*http.Cookie
+func hireWorker(jobQueue chan int) {
+	var client http.Client
+	var ck []*http.Cookie
 
-	for _, r := range scenario.Requests {
-		var status int
-		var t time.Duration
+	for _ = range jobQueue {
+		for _, r := range scenario.Requests {
+			var status int
+			var duration time.Duration
 
-		v := url.Values{}
-		for _, p := range r.Params {
-			v.Add(p.Key, p.Value)
+			// set POST parameters
+			v := url.Values{}
+			for _, p := range r.Params {
+				v.Add(p.Key, p.Value)
+			}
+
+			status, ck, duration = sendRequest(client, r.Method, r.Url, v, ck)
+
+			Record(r.Title, status, duration)
 		}
-
-		status, c, t = HttpRequest(r.Method, r.Url, v, c)
-
-		Record(r.Title, status, t, m)
-	}
-	CheckFinish(wg, finishTime)
-}
-
-func CheckFinish(wg *sync.WaitGroup, finishTime time.Time) {
-	if time.Now().After(finishTime) {
-		wg.Done()
 	}
 }
 
-
-func HttpRequest(method string, path string, params url.Values, cookies []*http.Cookie) (int, []*http.Cookie, time.Duration) {
+func sendRequest(client http.Client, method string, path string, params url.Values, cookies []*http.Cookie) (int, []*http.Cookie, time.Duration) {
 	req, _ := http.NewRequest(method, path, strings.NewReader(params.Encode()))
 	for key, value := range config.HttpHeader {
 		req.Header.Add(key.(string), value.(string))
@@ -44,7 +39,7 @@ func HttpRequest(method string, path string, params url.Values, cookies []*http.
 	jar, _ := cookiejar.New(nil)
 	CookieURL, _ := url.Parse(path)
 	jar.SetCookies(CookieURL, cookies)
-	client := http.Client{Jar: jar}
+	client.Jar = jar
 
 	sTime := time.Now()
 	resp, err := client.Do(req)
